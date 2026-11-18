@@ -1,78 +1,92 @@
 import { FACULDADES } from "./FACULDADES.js";
 
-const MAP_ERROR_MESSAGE = "erro ao carregar mapa";
-const MAP_API_TIMEOUT = 5000;
-const mapContainer = document.querySelector("#map-container");
+const container = document.getElementById("map-container");
 
-let hasFinished = false;
+function esperarApi() {
+    return new Promise((resolve, reject) => {
+        if (window.mapApiLoaded) return resolve();
+        if (window.mapApiFailed) return reject(new Error("Falha ao carregar a API"));
 
-function showMapError() {
-    if (hasFinished) {
-        return;
-    }
-
-    hasFinished = true;
-    mapContainer.replaceChildren();
-
-    const errorHeading = document.createElement("h1");
-    errorHeading.className = "map-error";
-    errorHeading.textContent = MAP_ERROR_MESSAGE;
-    mapContainer.append(errorHeading);
+        window.addEventListener("map-api-loaded", resolve, { once: true });
+        window.addEventListener(
+            "map-api-error",
+            () => reject(new Error("Falha ao carregar a API")),
+            { once: true }
+        );
+    });
 }
 
-function initializeMap() {
-    if (hasFinished) {
-        return;
-    }
+function linkGoogle(faculdade) {
+    const consulta = `${faculdade.nome}, ${faculdade.endereco}`;
+    return (
+        faculdade.linkGoogle ??
+        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(consulta)}`
+    );
+}
 
-    try {
-        if (!window.google?.maps || FACULDADES.length === 0) {
-            throw new Error("A API do mapa ou os dados das faculdades não estão disponíveis.");
-        }
+function criarPopup(faculdade) {
+    const div = document.createElement("div");
+    div.className = "info-popup";
 
-        const firstFaculty = FACULDADES[0];
-        const mapElement = document.createElement("div");
-        mapElement.id = "map";
-        mapContainer.replaceChildren(mapElement);
+    const link = document.createElement("a");
+    link.href = linkGoogle(faculdade);
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.setAttribute("aria-label", `Ver ${faculdade.nome} no Google (abre em nova aba)`);
 
-        const map = new window.google.maps.Map(mapElement, {
-            center: firstFaculty.localizacao,
-            zoom: 15,
+    const img = document.createElement("img");
+    img.src = faculdade.foto.src;
+    img.alt = faculdade.foto.alt;
+    link.append(img);
+
+    const titulo = document.createElement("h2");
+    titulo.textContent = faculdade.nome;
+
+    const endereco = document.createElement("p");
+    endereco.textContent = faculdade.endereco;
+
+    div.append(link, titulo, endereco);
+    return div;
+}
+
+function iniciarMapa() {
+    container.replaceChildren();
+
+    const mapa = document.createElement("div");
+    mapa.id = "map";
+    container.append(mapa);
+
+    const map = new google.maps.Map(mapa, {
+        center: { lat: -23.96, lng: -46.36 },
+        zoom: 11,
+    });
+
+    const infoWindow = new google.maps.InfoWindow();
+    const limites = new google.maps.LatLngBounds();
+
+    FACULDADES.filter((f) => f.localizacao.lat !== 0).forEach((faculdade) => {
+        const marker = new google.maps.Marker({
+            map,
+            position: faculdade.localizacao,
+            title: faculdade.nome,
         });
 
-        for (const faculdade of FACULDADES) {
-            new window.google.maps.Marker({
-                map,
-                position: faculdade.localizacao,
-                title: faculdade.nome,
-            });
-        }
+        marker.addListener("click", () => {
+            infoWindow.setContent(criarPopup(faculdade));
+            infoWindow.open({ map, anchor: marker });
+        });
 
-        hasFinished = true;
-    } catch (error) {
-        console.error("Falha ao inicializar o mapa:", error);
-        showMapError();
-    }
+        limites.extend(faculdade.localizacao);
+    });
+
+    map.fitBounds(limites);
 }
 
-function startTimeout() {
-    const elapsedTime = Date.now() - window.mapApiLoadStartedAt;
-    const remainingTime = Math.max(0, MAP_API_TIMEOUT - elapsedTime);
-
-    window.setTimeout(() => {
-        if (!window.mapApiLoaded) {
-            showMapError();
-        }
-    }, remainingTime);
+function mostrarErro() {
+    const erro = document.createElement("p");
+    erro.className = "map-error";
+    erro.textContent = "Não foi possível carregar o mapa. Tente novamente mais tarde.";
+    container.replaceChildren(erro);
 }
 
-window.addEventListener("map-api-loaded", initializeMap, { once: true });
-window.addEventListener("map-api-error", showMapError, { once: true });
-
-startTimeout();
-
-if (window.mapApiFailed) {
-    showMapError();
-} else if (window.mapApiLoaded) {
-    initializeMap();
-}
+esperarApi().then(iniciarMapa).catch(mostrarErro);

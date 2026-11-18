@@ -1,30 +1,109 @@
 :root {
-    color: #172033;
-    background: #f4f7fb;
-    font-family: Arial, Helvetica, sans-serif;
+    --papel: #f3ecdf;
+    --papel-claro: #fffaf0;
+    --tinta: #1c1a17;
+    --suave: #5a5348;
+    --destaque: #b93a22;
+    --marca: #f2c94c;
+
+    color: var(--tinta);
+    background: var(--papel);
+    font-family: "Segoe UI", system-ui, sans-serif;
+    line-height: 1.6;
 }
 
 * {
     box-sizing: border-box;
 }
 
-html,
 body {
     margin: 0;
-    min-height: 100%;
+    min-height: 100dvh;
 }
 
-body {
-    min-height: 100vh;
+img {
+    max-width: 100%;
+    height: auto;
 }
 
 a {
     color: inherit;
 }
 
+h1,
+h2 {
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+}
+
+::selection {
+    background: var(--marca);
+}
+
+:focus-visible {
+    outline: 3px solid var(--tinta);
+    outline-offset: 3px;
+}
+
+/* Cabeçalho */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 5vw;
+    background: var(--papel);
+    border-bottom: 2px solid var(--tinta);
+}
+
+.site-title {
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.site-title::before {
+    content: "";
+    display: inline-block;
+    width: 0.65em;
+    height: 0.65em;
+    margin-right: 0.5rem;
+    background: var(--destaque);
+}
+
+.site-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.site-navigation a {
+    padding: 0.2rem 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+}
+
+.site-navigation a:hover,
+.site-navigation a[aria-current="page"] {
+    border-bottom-color: var(--destaque);
+}
+
+/* Início */
 .home-page {
     display: grid;
-    min-height: 100vh;
+    min-height: 100dvh;
     place-items: center;
     padding: 2rem;
 }
@@ -33,88 +112,135 @@ a {
     width: min(100%, 42rem);
     padding: 3rem 2rem;
     text-align: center;
-    background: #ffffff;
-    border: 1px solid #dce3ee;
-    border-radius: 1rem;
-    box-shadow: 0 0.75rem 2rem rgb(23 32 51 / 10%);
+    background: var(--papel-claro);
+    border: 2px solid var(--tinta);
+    box-shadow: 8px 8px 0 var(--tinta);
 }
 
 .welcome-content h1,
 .content-page h1 {
     margin-top: 0;
+    font-size: clamp(2rem, 6vw, 3.2rem);
 }
 
 .welcome-actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1rem;
+    gap: 1.25rem;
     margin: 2rem 0;
 }
 
 .button {
-    padding: 0.75rem 1.25rem;
-    color: #ffffff;
-    background: #2457a6;
-    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    color: var(--papel-claro);
+    font-weight: 600;
+    background: var(--tinta);
+    border: 2px solid var(--tinta);
+    box-shadow: 4px 4px 0 var(--destaque);
     text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.button:hover,
-.button:focus-visible {
-    background: #173d79;
+.button:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--destaque);
+}
+
+.button:active {
+    transform: translate(3px, 3px);
+    box-shadow: 1px 1px 0 var(--destaque);
 }
 
 .participants {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.75rem 1.5rem;
+    gap: 0.5rem 1.5rem;
     padding: 0;
     margin: 0;
+    color: var(--suave);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     list-style: none;
 }
 
-.site-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    min-height: 4rem;
-    padding: 0.75rem 5vw;
-    color: #ffffff;
-    background: #172f5f;
+/* Conteúdo */
+.content-page {
+    width: min(100% - 2rem, 50rem);
+    padding: 3rem 0;
+    margin: 0 auto;
 }
 
-.site-title {
-    font-size: 1.1rem;
+.lead {
+    margin-bottom: 2.5rem;
+    color: var(--suave);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 1.25rem;
+    font-style: italic;
+}
+
+.explanation {
+    margin-bottom: 2rem;
+    padding-top: 1.25rem;
+    border-top: 2px solid var(--tinta);
+}
+
+.explanation h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.5rem;
+}
+
+.explanation p,
+.explanation li {
+    line-height: 1.75;
+}
+
+.explanation li::marker {
+    color: var(--destaque);
     font-weight: 700;
-    text-decoration: none;
 }
 
-.site-navigation {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.75rem 1.25rem;
-    padding: 0;
-    margin: 0;
-    list-style: none;
+.next-step {
+    padding: 1rem 1.25rem;
+    background: var(--marca);
+    border: 2px solid var(--tinta);
+    box-shadow: 4px 4px 0 var(--tinta);
 }
 
-.site-navigation a {
-    text-decoration: none;
+.next-step a {
+    font-weight: 700;
 }
 
-.site-navigation a:hover,
-.site-navigation a:focus-visible {
-    text-decoration: underline;
+.site-footer {
+    padding: 1.5rem 1rem;
+    color: var(--suave);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-align: center;
+    text-transform: uppercase;
+    border-top: 2px solid var(--tinta);
 }
 
+.skip-link {
+    position: absolute;
+    top: -4rem;
+    left: 1rem;
+    padding: 0.5rem 1rem;
+    color: var(--papel-claro);
+    background: var(--tinta);
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Mapa */
 .map-page {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
 }
 
@@ -133,6 +259,9 @@ a {
     position: absolute;
     inset: 50% auto auto 50%;
     margin: 0;
+    padding: 0.5rem 1rem;
+    background: var(--papel-claro);
+    border: 2px solid var(--tinta);
     transform: translate(-50%, -50%);
 }
 
@@ -140,33 +269,75 @@ a {
     display: grid;
     height: 100%;
     margin: 0;
+    padding: 1rem;
     place-items: center;
-    color: #9c1c1c;
+    color: var(--destaque);
+    font-weight: 600;
     text-align: center;
 }
 
-.content-page {
-    width: min(100% - 2rem, 55rem);
-    padding: 3rem 0;
-    margin: 0 auto;
+/* Cards de faculdades */
+#lista-faculdades {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 2rem;
 }
 
-.explanation h2 {
-    margin-top: 2rem;
-    font-size: 1.2rem;
+.faculdade-card {
+    background: var(--papel-claro);
+    border: 2px solid var(--tinta);
+    box-shadow: 6px 6px 0 var(--tinta);
+    transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.explanation p {
-    line-height: 1.6;
+.faculdade-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 var(--tinta);
+}
+
+.faculdade-card figure {
+    margin: 0;
+    border-bottom: 2px solid var(--tinta);
+}
+
+.faculdade-card figure a {
+    display: block;
+}
+
+.faculdade-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    filter: sepia(0.25) contrast(1.05);
+    transition: filter 0.3s;
+}
+
+.faculdade-card a:hover img {
+    filter: none;
+}
+
+.faculdade-card figcaption {
+    padding: 0.25rem 0.75rem;
+    color: var(--suave);
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+.faculdade-card h2 {
+    margin: 1rem 1rem 0.5rem;
+    font-size: 1.15rem;
+}
+
+.faculdade-card p {
+    margin: 0 1rem 1rem;
+    color: var(--suave);
+    font-size: 0.9rem;
 }
 
 @media (max-width: 42rem) {
     .site-header {
         align-items: flex-start;
         flex-direction: column;
-    }
-
-    .site-navigation {
-        justify-content: flex-start;
     }
 }

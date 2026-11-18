@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa de faculdades públicas</title>
+    <meta name="description" content="Mapa das faculdades públicas da Baixada Santista, com fotos e endereços.">
     <link rel="stylesheet" href="css/index.css">
 </head>
 <body class="map-page">
@@ -20,10 +21,10 @@
 
     <main id="map-container" class="map-container" aria-label="Mapa de faculdades públicas">
         <p class="map-loading">Carregando mapa...</p>
+        <noscript><p class="map-error">Ative o JavaScript para ver o mapa.</p></noscript>
     </main>
 
     <script>
-        window.mapApiLoadStartedAt = Date.now();
         window.mapApiLoaded = false;
         window.mapApiFailed = false;
 
@@ -39,7 +40,7 @@
     </script>
     <script type="module" src="js/mapa.js"></script>
     <script
-        src="https://maps.googleapis.com/maps/api/js?key=COLOQUE_SUA_CHAVE_AQUI&amp;callback=mapApiLoadedCallback"
+        src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_AQUI&amp;loading=async&amp;callback=mapApiLoadedCallback"
         async
         defer
         onerror="window.mapApiErrorCallback()"
